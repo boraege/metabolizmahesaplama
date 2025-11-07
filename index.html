@@ -53,6 +53,30 @@
                     <button id="hesaplaBtn" class="w-full bg-teal-600 text-white p-3 rounded-lg font-bold hover:bg-teal-700 transition-colors mt-3 sm:mt-4 text-sm sm:text-base">Hesapla</button>
                 </div>
                 <div class="bg-white p-3 sm:p-4 rounded-lg shadow-md">
+                    <h2 class="text-lg sm:text-xl font-semibold text-teal-700 mb-3 sm:mb-4">Ağırlık Persentil Seçimi</h2>
+                    <div class="space-y-3 sm:space-y-4">
+                        <div>
+                            <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Persentil Kaynağı</label>
+                            <select id="persentilKaynak" class="w-full p-2 text-sm sm:text-base border border-gray-300 rounded-md">
+                                <option value="manuel">Manuel Giriş</option>
+                                <option value="persentil">Persentilden Hesapla</option>
+                            </select>
+                        </div>
+                        <div id="persentilSecimDiv">
+                            <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Persentil Seçimi</label>
+                            <select id="persentilSecim" class="w-full p-2 text-sm sm:text-base border border-gray-300 rounded-md">
+                                <option value="3">3</option>
+                                <option value="10">10</option>
+                                <option value="25">25</option>
+                                <option value="50" selected>50</option>
+                                <option value="75">75</option>
+                                <option value="90">90</option>
+                                <option value="97">97</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-3 sm:p-4 rounded-lg shadow-md">
                     <h2 class="text-lg sm:text-xl font-semibold text-teal-700 mb-3 sm:mb-4">Günlük Gereksinimler</h2>
                     <div class="grid grid-cols-2 gap-3 sm:gap-4">
                         <div>
@@ -87,36 +111,6 @@
                 </div>
             </div>
             <div class="lg:col-span-1 space-y-4 sm:space-y-6">
-                <div class="bg-white p-3 sm:p-4 rounded-lg shadow-md">
-                    <h2 class="text-lg sm:text-xl font-semibold text-teal-700 mb-3 sm:mb-4">Ağırlık Persentil Seçimi</h2>
-                    <div class="space-y-3 sm:space-y-4">
-                        <div>
-                            <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Persentil Kaynağı</label>
-                            <select id="persentilKaynak" class="w-full p-2 text-sm sm:text-base border border-gray-300 rounded-md">
-                                <option value="manuel">Manuel Giriş</option>
-                                <option value="persentil">Persentilden Hesapla</option>
-                            </select>
-                        </div>
-                        <div id="persentilSecimDiv">
-                            <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Persentil Seçimi</label>
-                            <select id="persentilSecim" class="w-full p-2 text-sm sm:text-base border border-gray-300 rounded-md">
-                                <option value="3">3</option>
-                                <option value="10">10</option>
-                                <option value="25">25</option>
-                                <option value="50" selected>50</option>
-                                <option value="75">75</option>
-                                <option value="90">90</option>
-                                <option value="97">97</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-white p-3 sm:p-4 rounded-lg shadow-md">
-                    <h2 class="text-lg sm:text-xl font-semibold text-teal-700 mb-3 sm:mb-4">Yeni Bölüm</h2>
-                    <div class="space-y-3 sm:space-y-4">
-                        <p class="text-xs sm:text-sm text-gray-600">Buraya içerik eklenecek</p>
-                    </div>
-                </div>
                 <div class="bg-white p-3 sm:p-4 rounded-lg shadow-md">
                     <h2 class="text-lg sm:text-xl font-semibold text-teal-700 mb-3 sm:mb-4">Beslenme Referansları</h2>
                     <div class="overflow-x-auto -mx-3 sm:mx-0">
