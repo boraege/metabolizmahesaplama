@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metabolizma Hesaplayıcı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-teal-50 min-h-screen p-4">
+    <div class="max-w-7xl mx-auto">
+        <h1 class="text-3xl font-bold text-center text-teal-800 mb-6">Metabolizma Hesaplayıcı</h1>
+        
+        <div class="md:grid grid-cols-3 gap-6">
+            <div class="col-span-2 space-y-6">
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                    <h2 class="text-xl font-semibold text-teal-700 mb-4">Kişisel Bilgiler</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Adı Soyadı</label>
+                            <input type="text" id="adSoyad" class="w-full p-2 border border-gray-300 rounded-md">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Boy (cm)</label>
+                            <input type="number" id="boy" class="w-full p-2 border border-gray-300 rounded-md">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Ağırlık (kg)</label>
+                            <input type="number" id="agirlik" step="0.01" class="w-full p-2 border border-gray-300 rounded-md">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Yaş</label>
+                            <input type="number" id="yas" class="w-full p-2 border border-gray-300 rounded-md">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Yaş Birimi</label>
+                            <select id="yasBirim" class="w-full p-2 border border-gray-300 rounded-md">
+                                <option value="Yıl">Yıl</option>
+                                <option value="Ay">Ay</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Cinsiyet</label>
+                            <select id="cinsiyet" class="w-full p-2 border border-gray-300 rounded-md">
+                                <option value="Erkek">Erkek</option>
+                                <option value="Kadın">Kadın</option>
+                            </select>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="premature" class="mr-2 h-4 w-4">
+                            <label class="text-sm font-medium text-gray-700">Prematüre</label>
+                        </div>
+                    </div>
+                    <button id="hesaplaBtn" class="w-full bg-teal-600 text-white p-2 rounded-lg font-bold hover:bg-teal-700 transition-colors mt-4">Hesapla</button>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                    <h2 class="text-xl font-semibold text-teal-700 mb-4">Günlük Gereksinimler</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">BMH (kcal/gün)</label>
+                            <input type="text" id="sonucBMH" readonly class="w-full p-2 border border-gray-300 rounded-md bg-gray-50 font-medium">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">BKİ</label>
+                            <input type="text" id="sonucBKI" readonly class="w-full p-2 border border-gray-300 rounded-md bg-gray-50 font-medium">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Enerji (Ref) (kcal)</label>
+                            <input type="text" id="sonucEnerjiRef" readonly class="w-full p-2 border border-gray-300 rounded-md bg-gray-50 font-medium">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Enerji (Pratik) (kcal)</label>
+                            <input type="text" id="sonucEnerjiPratik" readonly class="w-full p-2 border border-gray-300 rounded-md bg-gray-50 font-medium">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Protein (g)</label>
+                            <input type="text" id="sonucProtein" readonly class="w-full p-2 border border-gray-300 rounded-md bg-gray-50 font-medium">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Fenilalanin (mg)</label>
+                            <input type="text" id="sonucFA" readonly class="w-full p-2 border border-gray-300 rounded-md bg-gray-50 font-medium">
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                    <h2 class="text-xl font-semibold text-teal-700 mb-4">Hesaplamalar ve Referanslar</h2>
+                    <div id="hesaplamaOzeti" class="bg-gray-100 p-3 rounded-md text-sm whitespace-pre-wrap"></div>
+                </div>
+            </div>
+            <div class="col-span-1 space-y-6">
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                    <h2 class="text-xl font-semibold text-teal-700 mb-4">Ağırlık Persentil Seçimi</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Persentil Kaynağı</label>
+                            <select id="persentilKaynak" class="w-full p-2 border border-gray-300 rounded-md">
+                                <option value="manuel">Manuel Giriş</option>
+                                <option value="persentil">Persentilden Hesapla</option>
+                            </select>
+                        </div>
+                        <div id="persentilSecimDiv">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Persentil Seçimi</label>
+                            <select id="persentilSecim" class="w-full p-2 border border-gray-300 rounded-md">
+                                <option value="3">3</option>
+                                <option value="10">10</option>
+                                <option value="25">25</option>
+                                <option value="50" selected>50</option>
+                                <option value="75">75</option>
+                                <option value="90">90</option>
+                                <option value="97">97</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                    <h2 class="text-xl font-semibold text-teal-700 mb-4">Beslenme Referansları</h2>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm border-collapse">
+                            <thead>
+                                <tr class="bg-teal-100">
+                                    <th class="border border-gray-300 p-2 text-left">Yaş</th>
+                                    <th class="border border-gray-300 p-2 text-left">FA (mg/kg)</th>
+                                    <th class="border border-gray-300 p-2 text-left">Protein (g/kg)</th>
+                                    <th class="border border-gray-300 p-2 text-left">Enerji (kcal/kg)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr id="ref-premature">
+                                    <td class="border border-gray-300 p-2">Prematüre</td>
+                                    <td class="border border-gray-300 p-2">90</td>
+                                    <td class="border border-gray-300 p-2">3.2</td>
+                                    <td class="border border-gray-300 p-2">125-130</td>
+                                </tr>
+                                <tr id="ref-0-3-ay">
+                                    <td class="border border-gray-300 p-2">0-3 ay</td>
+                                    <td class="border border-gray-300 p-2">60</td>
+                                    <td class="border border-gray-300 p-2">2.5</td>
+                                    <td class="border border-gray-300 p-2">110-120</td>
+                                </tr>
+                                <tr id="ref-3-6-ay">
+                                    <td class="border border-gray-300 p-2">3-6 ay</td>
+                                    <td class="border border-gray-300 p-2">50</td>
+                                    <td class="border border-gray-300 p-2">2.5</td>
+                                    <td class="border border-gray-300 p-2">110-120</td>
+                                </tr>
+                                <tr id="ref-6-12-ay">
+                                    <td class="border border-gray-300 p-2">6 ay-12 ay</td>
+                                    <td class="border border-gray-300 p-2">40</td>
+                                    <td class="border border-gray-300 p-2">2.4</td>
+                                    <td class="border border-gray-300 p-2">105-115</td>
+                                </tr>
+                                <tr id="ref-1-3-yas">
+                                    <td class="border border-gray-300 p-2">1-3 yaş</td>
+                                    <td class="border border-gray-300 p-2">30</td>
+                                    <td class="border border-gray-300 p-2">2.0</td>
+                                    <td class="border border-gray-300 p-2">90-105</td>
+                                </tr>
+                                <tr id="ref-4-6-yas">
+                                    <td class="border border-gray-300 p-2">4-6 yaş</td>
+                                    <td class="border border-gray-300 p-2">25</td>
+                                    <td class="border border-gray-300 p-2">1.7</td>
+                                    <td class="border border-gray-300 p-2">80-90</td>
+                                </tr>
+                                <tr id="ref-7-9-yas">
+                                    <td class="border border-gray-300 p-2">7-9 yaş</td>
+                                    <td class="border border-gray-300 p-2">15</td>
+                                    <td class="border border-gray-300 p-2">1.6</td>
+                                    <td class="border border-gray-300 p-2">70-90</td>
+                                </tr>
+                                <tr id="ref-10-plus-yas">
+                                    <td class="border border-gray-300 p-2">10+ yaş</td>
+                                    <td class="border border-gray-300 p-2">10</td>
+                                    <td class="border border-gray-300 p-2">1.5</td>
+                                    <td class="border border-gray-300 p-2">70-80</td>
+                                </tr>
+                                <tr id="ref-gebelik">
+                                    <td class="border border-gray-300 p-2">Gebelik</td>
+                                    <td class="border border-gray-300 p-2">10</td>
+                                    <td class="border border-gray-300 p-2">1.3</td>
+                                    <td class="border border-gray-300 p-2">40-50</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const adSoyadElement = document.getElementById('adSoyad');
+        const boyElement = document.getElementById('boy');
+        const agirlikElement = document.getElementById('agirlik');
+        const yasElement = document.getElementById('yas');
+        const yasBirimElement = document.getElementById('yasBirim');
+        const cinsiyetElement = document.getElementById('cinsiyet');
+        const prematureElement = document.getElementById('premature');
+        const hesaplaBtnElement = document.getElementById('hesaplaBtn');
+        const persentilKaynakElement = document.getElementById('persentilKaynak');
+        const persentilSecimElement = document.getElementById('persentilSecim');
+        const persentilSecimDivElement = document.getElementById('persentilSecimDiv');
+        
+        const sonucBMHElement = document.getElementById('sonucBMH');
+        const sonucBKIElement = document.getElementById('sonucBKI');
+        const sonucEnerjiRefElement = document.getElementById('sonucEnerjiRef');
+        const sonucEnerjiPratikElement = document.getElementById('sonucEnerjiPratik');
+        const sonucProteinElement = document.getElementById('sonucProtein');
+        const sonucFAElement = document.getElementById('sonucFA');
+        const hesaplamaOzetiElement = document.getElementById('hesaplamaOzeti');
+
+        const referansVerisi = [
+            { id: 'ref-premature', label: 'Prematüre', fa_min: 90, protein: 3.2, enerji_min: 125, enerji_max: 130 },
+            { id: 'ref-0-3-ay', label: '0-3 ay', fa_min: 60, protein: 2.5, enerji_min: 110, enerji_max: 120 },
+            { id: 'ref-3-6-ay', label: '3-6 ay', fa_min: 50, protein: 2.5, enerji_min: 110, enerji_max: 120 },
+            { id: 'ref-6-12-ay', label: '6 ay-12 ay', fa_min: 40, protein: 2.4, enerji_min: 105, enerji_max: 115 },
+            { id: 'ref-1-3-yas', label: '1-3 yaş', fa_min: 30, protein: 2.0, enerji_min: 90, enerji_max: 105 },
+            { id: 'ref-4-6-yas', label: '4-6 yaş', fa_min: 25, protein: 1.7, enerji_min: 80, enerji_max: 90 },
+            { id: 'ref-7-9-yas', label: '7-9 yaş', fa_min: 15, protein: 1.6, enerji_min: 70, enerji_max: 90 },
+            { id: 'ref-10-plus-yas', label: '10+ yaş', fa_min: 10, protein: 1.5, enerji_min: 70, enerji_max: 80 },
+            { id: 'ref-gebelik', label: 'Gebelik', fa_min: 10, protein: 1.3, enerji_min: 40, enerji_max: 50 }
+        ];
+
+        const agirlikPersentilVerisi = {
+            erkek: {
+                "Doğum": { 3: 2.58, 10: 2.85, 25: 3.13, 50: 3.43, 75: 3.73, 90: 4.00, 97: 4.27 },
+                "3 ay": { 3: 4.90, 10: 5.41, 25: 5.92, 50: 6.39, 75: 6.99, 90: 7.54, 97: 8.10 },
+                "6 ay": { 3: 6.21, 10: 6.79, 25: 7.41, 50: 8.12, 75: 8.84, 90: 9.53, 97: 10.21 },
+                "9 ay": { 3: 7.14, 10: 7.74, 25: 8.41, 50: 9.17, 75: 10.06, 90: 10.81, 97: 11.58 },
+                "12 ay": { 3: 7.95, 10: 8.61, 25: 9.32, 50: 10.16, 75: 11.04, 90: 11.83, 97: 12.67 },
+                "1.5 yaş": { 3: 9.13, 10: 9.82, 25: 10.63, 50: 11.58, 75: 12.83, 90: 13.75, 97: 14.72 },
+                "2 yaş": { 3: 9.82, 10: 10.58, 25: 11.49, 50: 12.57, 75: 13.78, 90: 14.86, 97: 15.93 },
+                "2.5 yaş": { 3: 10.51, 10: 11.33, 25: 12.30, 50: 13.43, 75: 14.70, 90: 15.89, 97: 17.06 },
+                "3 yaş": { 3: 11.06, 10: 11.94, 25: 12.97, 50: 14.21, 75: 15.76, 90: 16.86, 97: 18.05 },
+                "3.5 yaş": { 3: 11.69, 10: 12.63, 25: 13.80, 50: 15.01, 75: 16.63, 90: 17.91, 97: 19.16 },
+                "4 yaş": { 3: 12.16, 10: 13.35, 25: 14.46, 50: 15.89, 75: 17.58, 90: 18.99, 97: 20.39 },
+                "4.5 yaş": { 3: 12.82, 10: 14.00, 25: 15.22, 50: 16.74, 75: 18.71, 90: 20.14, 97: 21.65 },
+                "5 yaş": { 3: 14.0, 10: 15.0, 25: 16.2, 50: 17.7, 75: 19.9, 90: 21.3, 97: 23.0 },
+                "5.5 yaş": { 3: 14.8, 10: 15.9, 25: 17.2, 50: 18.8, 75: 21.1, 90: 22.8, 97: 24.6 },
+                "6 yaş": { 3: 15.4, 10: 16.5, 25: 17.9, 50: 19.6, 75: 22.0, 90: 23.6, 97: 26.0 },
+                "7 yaş": { 3: 16.8, 10: 18.2, 25: 19.9, 50: 21.9, 75: 24.8, 90: 27.0, 97: 29.8 },
+                "8 yaş": { 3: 18.1, 10: 19.5, 25: 21.1, 50: 23.2, 75: 25.8, 90: 28.5, 97: 31.6 },
+                "9 yaş": { 3: 20.0, 10: 21.5, 25: 23.5, 50: 25.9, 75: 28.9, 90: 31.8, 97: 35.2 },
+                "10 yaş": { 3: 21.7, 10: 23.6, 25: 25.8, 50: 28.8, 75: 32.4, 90: 36.4, 97: 41.3 },
+                "11 yaş": { 3: 23.9, 10: 26.0, 25: 28.4, 50: 31.8, 75: 35.8, 90: 40.8, 97: 46.9 },
+                "12 yaş": { 3: 26.6, 10: 29.6, 25: 33.1, 50: 37.8, 75: 43.6, 90: 50.0, 97: 57.8 },
+                "13 yaş": { 3: 30.6, 10: 34.0, 25: 38.3, 50: 44.1, 75: 51.0, 90: 58.5, 97: 66.8 },
+                "14 yaş": { 3: 33.4, 10: 38.0, 25: 43.2, 50: 49.8, 75: 57.3, 90: 64.9, 97: 73.6 },
+                "15 yaş": { 3: 38.0, 10: 42.1, 25: 47.6, 50: 54.6, 75: 62.4, 90: 70.0, 97: 78.7 },
+                "16 yaş": { 3: 45.2, 10: 50.1, 25: 55.4, 50: 62.1, 75: 69.7, 90: 77.8, 97: 86.4 },
+                "17 yaş": { 3: 53.2, 10: 57.8, 25: 62.8, 50: 69.2, 75: 76.0, 90: 84.0, 97: 92.4 },
+                "18 yaş": { 3: 55.1, 10: 60.5, 25: 66.5, 50: 71.8, 75: 78.0, 90: 86.4, 97: 95.7 }
+            },
+            kadin: {
+                "Doğum": { 3: 2.52, 10: 2.76, 25: 3.01, 50: 3.39, 75: 3.66, 90: 3.92, 97: 4.24 },
+                "3 ay": { 3: 4.61, 10: 5.05, 25: 5.56, 50: 6.09, 75: 6.74, 90: 7.33, 97: 7.95 },
+                "6 ay": { 3: 5.94, 10: 6.50, 25: 7.15, 50: 7.82, 75: 8.62, 90: 9.32, 97: 10.05 },
+                "9 ay": { 3: 6.85, 10: 7.34, 25: 7.89, 50: 8.55, 75: 9.29, 90: 10.02, 97: 10.82 },
+                "12 ay": { 3: 7.54, 10: 8.07, 25: 8.70, 50: 9.49, 75: 10.28, 90: 11.08, 97: 11.96 },
+                "1.5 yaş": { 3: 8.69, 10: 9.31, 25: 10.03, 50: 10.90, 75: 11.86, 90: 12.73, 97: 13.68 },
+                "2 yaş": { 3: 9.49, 10: 10.20, 25: 10.99, 50: 11.94, 75: 12.99, 90: 14.03, 97: 15.15 },
+                "2.5 yaş": { 3: 10.23, 10: 11.01, 25: 11.84, 50: 12.86, 75: 14.13, 90: 15.22, 97: 16.34 },
+                "3 yaş": { 3: 11.19, 10: 12.09, 25: 13.05, 50: 14.18, 75: 15.37, 90: 16.51, 97: 17.68 },
+                "3.5 yaş": { 3: 11.87, 10: 12.83, 25: 13.91, 50: 15.14, 75: 16.57, 90: 17.89, 97: 19.26 },
+                "4 yaş": { 3: 12.7, 10: 13.7, 25: 14.8, 50: 16.1, 75: 17.7, 90: 19.2, 97: 20.8 },
+                "4.5 yaş": { 3: 13.2, 10: 14.3, 25: 15.5, 50: 17.0, 75: 18.7, 90: 20.3, 97: 22.1 },
+                "5 yaş": { 3: 14.2, 10: 15.4, 25: 16.7, 50: 18.4, 75: 20.3, 90: 22.2, 97: 24.3 },
+                "5.5 yaş": { 3: 15.0, 10: 16.2, 25: 17.7, 50: 19.5, 75: 21.6, 90: 23.7, 97: 26.0 },
+                "6 yaş": { 3: 15.7, 10: 17.0, 25: 18.6, 50: 20.6, 75: 22.9, 90: 25.3, 97: 27.9 },
+                "7 yaş": { 3: 17.3, 10: 18.8, 25: 20.8, 50: 23.2, 75: 26.0, 90: 28.8, 97: 31.8 },
+                "8 yaş": { 3: 18.9, 10: 20.8, 25: 22.9, 50: 25.7, 75: 28.9, 90: 32.4, 97: 36.5 },
+                "9 yaş": { 3: 20.7, 10: 22.7, 25: 25.2, 50: 28.4, 75: 32.2, 90: 36.2, 97: 41.2 },
+                "10 yaş": { 3: 23.0, 10: 25.0, 25: 28.7, 50: 32.6, 75: 37.3, 90: 42.3, 97: 48.0 },
+                "11 yaş": { 3: 26.7, 10: 29.4, 25: 33.1, 50: 37.9, 75: 43.5, 90: 49.3, 97: 55.6 },
+                "12 yaş": { 3: 32.0, 10: 35.8, 25: 39.9, 50: 45.1, 75: 50.9, 90: 56.8, 97: 63.1 },
+                "13 yaş": { 3: 37.1, 10: 40.5, 25: 44.4, 50: 49.7, 75: 55.4, 90: 61.2, 97: 67.8 },
+                "14 yaş": { 3: 41.6, 10: 45.0, 25: 48.8, 50: 53.3, 75: 58.3, 90: 63.2, 97: 68.5 },
+                "15 yaş": { 3: 45.0, 10: 48.0, 25: 51.5, 50: 55.4, 75: 60.1, 90: 65.0, 97: 70.3 },
+                "16 yaş": { 3: 46.2, 10: 49.0, 25: 52.0, 50: 56.3, 75: 61.0, 90: 65.7, 97: 70.7 },
+                "17 yaş": { 3: 46.7, 10: 49.5, 25: 52.6, 50: 57.0, 75: 61.8, 90: 66.8, 97: 71.8 },
+                "18 yaş": { 3: 47.3, 10: 50.5, 25: 53.9, 50: 58.1, 75: 62.2, 90: 67.3, 97: 72.2 }
+            }
+        };
+
+        persentilKaynakElement.addEventListener('change', togglePersentilInput);
+        hesaplaBtnElement.addEventListener('click', anaHesapla);
+
+        function togglePersentilInput() {
+            if (persentilKaynakElement.value === 'manuel') {
+                persentilSecimDivElement.classList.add('hidden');
+            } else {
+                persentilSecimDivElement.classList.remove('hidden');
+            }
+        }
+
+        function getBeslenmeReferansSatiri(yas, yasBirim, premature) {
+            if (premature) {
+                return referansVerisi.find(r => r.id === 'ref-premature');
+            }
+            const toplamAy = (yasBirim === 'Ay') ? yas : yas * 12;
+            if (toplamAy <= 3) return referansVerisi.find(r => r.id === 'ref-0-3-ay');
+            if (toplamAy <= 6) return referansVerisi.find(r => r.id === 'ref-3-6-ay');
+            if (toplamAy <= 12) return referansVerisi.find(r => r.id === 'ref-6-12-ay');
+            if (toplamAy <= 36) return referansVerisi.find(r => r.id === 'ref-1-3-yas');
+            if (toplamAy <= 72) return referansVerisi.find(r => r.id === 'ref-4-6-yas');
+            if (toplamAy <= 108) return referansVerisi.find(r => r.id === 'ref-7-9-yas');
+            return referansVerisi.find(r => r.id === 'ref-10-plus-yas');
+        }
+
+        function getAgirlikPersentilKey(yas, yasBirim) {
+            const toplamAy = (yasBirim === 'Ay') ? yas : yas * 12;
+            if (toplamAy <= 1) return "Doğum";
+            if (toplamAy <= 4) return "3 ay";
+            if (toplamAy <= 7) return "6 ay";
+            if (toplamAy <= 10) return "9 ay";
+            if (toplamAy <= 15) return "12 ay";
+            if (toplamAy <= 21) return "1.5 yaş";
+            if (toplamAy <= 30) return "2 yaş";
+            if (toplamAy <= 33) return "2.5 yaş";
+            if (toplamAy <= 39) return "3 yaş";
+            if (toplamAy <= 45) return "3.5 yaş";
+            if (toplamAy <= 51) return "4 yaş";
+            if (toplamAy <= 57) return "4.5 yaş";
+            if (toplamAy <= 63) return "5 yaş";
+            if (toplamAy <= 69) return "5.5 yaş";
+            if (toplamAy <= 78) return "6 yaş";
+            if (toplamAy <= 90) return "7 yaş";
+            if (toplamAy <= 102) return "8 yaş";
+            if (toplamAy <= 114) return "9 yaş";
+            if (toplamAy <= 126) return "10 yaş";
+            if (toplamAy <= 138) return "11 yaş";
+            if (toplamAy <= 150) return "12 yaş";
+            if (toplamAy <= 162) return "13 yaş";
+            if (toplamAy <= 174) return "14 yaş";
+            if (toplamAy <= 186) return "15 yaş";
+            if (toplamAy <= 198) return "16 yaş";
+            if (toplamAy <= 210) return "17 yaş";
+            return "18 yaş";
+        }
+
+        function getAgirlikFromPersentil(yas, yasBirim, cinsiyet, persentil) {
+            const cinsiyetKey = (cinsiyet === 'Erkek') ? 'erkek' : 'kadin';
+            const yasKey = getAgirlikPersentilKey(yas, yasBirim);
+            const persentilKey = parseInt(persentil);
+            return agirlikPersentilVerisi[cinsiyetKey][yasKey][persentilKey];
+        }
+
+        function calculateBMR(cinsiyet, yas, agirlik) {
+            if (cinsiyet === 'Erkek') {
+                if (yas < 3) return (60.9 * agirlik) - 54;
+                if (yas < 10) return (22.7 * agirlik) + 495;
+                if (yas < 18) return (17.5 * agirlik) + 651;
+                return (15.3 * agirlik) + 679;
+            } else {
+                if (yas < 3) return (61.0 * agirlik) - 51;
+                if (yas < 10) return (22.5 * agirlik) + 499;
+                if (yas < 18) return (12.2 * agirlik) + 746;
+                return (14.7 * agirlik) + 496;
+            }
+        }
+
+        function anaHesapla() {
+            const adSoyad = adSoyadElement.value;
+            const boy = parseFloat(boyElement.value);
+            const yas = parseFloat(yasElement.value);
+            const yasBirim = yasBirimElement.value;
+            const cinsiyet = cinsiyetElement.value;
+            const premature = prematureElement.checked;
+
+            let hesaplamaAgirligi;
+            const kaynak = persentilKaynakElement.value;
+            
+            if (kaynak === 'manuel') {
+                hesaplamaAgirligi = parseFloat(agirlikElement.value);
+            } else {
+                const secilenPersentil = persentilSecimElement.value;
+                hesaplamaAgirligi = getAgirlikFromPersentil(yas, yasBirim, cinsiyet, secilenPersentil);
+                agirlikElement.value = hesaplamaAgirligi.toFixed(2);
+            }
+
+            if (isNaN(hesaplamaAgirligi) || isNaN(boy) || isNaN(yas)) {
+                alert('Lütfen tüm alanları doğru girin.');
+                return;
+            }
+
+            const beslenmeRef = getBeslenmeReferansSatiri(yas, yasBirim, premature);
+            const boy_m = boy / 100;
+            const BKI = hesaplamaAgirligi / (boy_m * boy_m);
+            const yasYil = (yasBirim === 'Ay') ? yas / 12 : yas;
+            const BMH = calculateBMR(cinsiyet, yasYil, hesaplamaAgirligi);
+            const EnerjiRef = beslenmeRef.enerji_min * hesaplamaAgirligi;
+            const Protein = beslenmeRef.protein * hesaplamaAgirligi;
+            const FA = beslenmeRef.fa_min * hesaplamaAgirligi;
+            const EnerjiPratik = Math.round(BMH * 1.5 / 50) * 50;
+
+            sonucBMHElement.value = BMH.toFixed(2);
+            sonucBKIElement.value = BKI.toFixed(2);
+            sonucEnerjiRefElement.value = EnerjiRef.toFixed(2);
+            sonucEnerjiPratikElement.value = EnerjiPratik.toFixed(0);
+            sonucProteinElement.value = Protein.toFixed(2);
+            sonucFAElement.value = FA.toFixed(2);
+
+            let bmrFormul = '';
+            if (cinsiyet === 'Erkek') {
+                if (yasYil < 3) bmrFormul = `(60.9 × ${hesaplamaAgirligi.toFixed(2)}) - 54`;
+                else if (yasYil < 10) bmrFormul = `(22.7 × ${hesaplamaAgirligi.toFixed(2)}) + 495`;
+                else if (yasYil < 18) bmrFormul = `(17.5 × ${hesaplamaAgirligi.toFixed(2)}) + 651`;
+                else bmrFormul = `(15.3 × ${hesaplamaAgirligi.toFixed(2)}) + 679`;
+            } else {
+                if (yasYil < 3) bmrFormul = `(61.0 × ${hesaplamaAgirligi.toFixed(2)}) - 51`;
+                else if (yasYil < 10) bmrFormul = `(22.5 × ${hesaplamaAgirligi.toFixed(2)}) + 499`;
+                else if (yasYil < 18) bmrFormul = `(12.2 × ${hesaplamaAgirligi.toFixed(2)}) + 746`;
+                else bmrFormul = `(14.7 × ${hesaplamaAgirligi.toFixed(2)}) + 496`;
+            }
+
+            const ozetMetni = `HESAPLAMA ÖZETİ
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Kişi: ${adSoyad || 'Belirtilmedi'}
+Yaş: ${yas} ${yasBirim}
+Cinsiyet: ${cinsiyet}
+Boy: ${boy} cm
+Ağırlık: ${hesaplamaAgirligi.toFixed(2)} kg
+${kaynak === 'persentil' ? `(Persentil: ${persentilSecimElement.value})` : '(Manuel Giriş)'}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+BMH Hesabı (WHO Formülü):
+${bmrFormul} = ${BMH.toFixed(2)} kcal/gün
+
+BKİ Hesabı:
+${hesaplamaAgirligi.toFixed(2)} ÷ (${boy_m.toFixed(2)} × ${boy_m.toFixed(2)}) = ${BKI.toFixed(2)}
+
+Enerji (Ref) Hesabı:
+${beslenmeRef.enerji_min} kcal/kg × ${hesaplamaAgirligi.toFixed(2)} kg = ${EnerjiRef.toFixed(2)} kcal
+
+Enerji (Pratik) Hesabı:
+BMH × 1.5 = ${BMH.toFixed(2)} × 1.5 = ${EnerjiPratik} kcal
+
+Protein Gereksinimi:
+${beslenmeRef.protein} g/kg × ${hesaplamaAgirligi.toFixed(2)} kg = ${Protein.toFixed(2)} g
+
+Fenilalanin Gereksinimi:
+${beslenmeRef.fa_min} mg/kg × ${hesaplamaAgirligi.toFixed(2)} kg = ${FA.toFixed(2)} mg
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Referans Grubu: ${beslenmeRef.label}`;
+
+            hesaplamaOzetiElement.textContent = ozetMetni;
+
+            document.querySelectorAll('tbody tr').forEach(row => {
+                row.classList.remove('bg-yellow-200');
+            });
+            
+            const selectedRow = document.getElementById(beslenmeRef.id);
+            if (selectedRow) {
+                selectedRow.classList.add('bg-yellow-200');
+            }
+        }
+
+        togglePersentilInput();
+    </script>
+</body>
+</html>
